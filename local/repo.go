@@ -1,29 +1,48 @@
+// Package local provides types and methods for interacting with a local persistence layer
 package local
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"sync/atomic"
 	"todo-grpc/proto"
 	"todo-grpc/todo"
+	"todo-grpc/validation"
 
 	"github.com/boltdb/bolt"
 )
+
+// Config describes the input to a NewRepository operation
+type Config struct {
+	Path string `validate:"required"`
+}
 
 // Repository provides access to a local todos store
 type Repository struct {
 	bucket []byte
 	db     *bolt.DB
-	n      int64
 }
 
 // NewRepository creates a new repository value
-func NewRepository() (*Repository, error) {
+func NewRepository(c *Config) (*Repository, error) {
+	// validate config
+	if err := validation.Validate.Struct(c); err != nil {
+		return nil, fmt.Errorf("invalid config: %v", err)
+	}
+
 	// open db
-	db, err := bolt.Open("my.db", 0600, nil)
+	db, err := bolt.Open(c.Path, 0600, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error opening db: %v", db)
+	}
+
+	// create todos bucket
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte(`todos`))
+		return err
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error creating bucket: %v", err)
 	}
 
 	// create and return repository
@@ -43,23 +62,15 @@ func (r *Repository) CreateTodo(ctx context.Context, in *todo.Todo) error {
 	}
 
 	// insert json
-	err = r.db.Update(func(tx *bolt.Tx) error {
+	return r.db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(r.bucket)
 		return bucket.Put([]byte(in.ID), raw)
 	})
-	if err != nil {
-		return err
-	}
-
-	// increment count
-	atomic.AddInt64(&r.n, 1)
-	return nil
 }
 
 // ListTodos retrieves a paginated list of todos
 func (r *Repository) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*todo.ListTodosOutput, error) {
 	var out todo.ListTodosOutput
-
 	err := r.db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(r.bucket)
 		cursor := bucket.Cursor()
@@ -74,7 +85,7 @@ func (r *Repository) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*
 			cursor.Seek(after)
 			k, v = cursor.Next()
 		} else {
-			k, v := cursor.First()
+			k, v = cursor.First()
 		}
 		if k == nil {
 			return nil
@@ -85,11 +96,17 @@ func (r *Repository) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*
 		}
 		out.Todos = append(out.Todos, &t)
 
-		// retrieve next page of keys
-		n := 1
+		// iterate until page is full or no more todos exist
+		n := int32(1)
 		for k, v := cursor.Next(); k != nil && n < in.First; k, v = cursor.Next() {
-
+			var t todo.Todo
+			if err := json.Unmarshal(v, &t); err != nil {
+				return err
+			}
+			out.Todos = append(out.Todos, &t)
 		}
+		out.Total = int64(bucket.Stats().KeyN)
+		return nil
 	})
 	return &out, err
 }

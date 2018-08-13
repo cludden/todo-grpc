@@ -67,6 +67,7 @@ message ListTodosInput {
     string after = 1;
 
     // Page size
+    // @inject_tag: validate:"min=0,max=20"
     int32 first = 2;
 }
 
