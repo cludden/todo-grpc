@@ -1,0 +1,21 @@
+{
+  "Tools": [
+    {
+      "Repository": "github.com/favadi/protoc-go-inject-tag",
+      "Commit": "702215640cc61f347b0fd4fd4e46b318ab468370"
+    },
+    {
+      "Repository": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway",
+      "Commit": "bb916ca4f209e5f2a004537658d944ef4ae4409e"
+    },
+    {
+      "Repository": "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger",
+      "Commit": "bb916ca4f209e5f2a004537658d944ef4ae4409e"
+    },
+    {
+      "Repository": "github.com/golang/protobuf/protoc-gen-go",
+      "Commit": "89a0c16f4dc2a70c0ed864d8ef64878f24fdaa51"
+    }
+  ],
+  "RetoolVersion": "1.3.7"
+}

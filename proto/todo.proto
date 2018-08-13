@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+package mindflash.todo;
+option go_package = "proto";
+
+service Todos {
+    // Creates a new Todo
+    rpc CreateTodo(CreateTodoInput) returns (CreateTodoOutput) {
+        option (google.api.http) = {
+            post: "/todos"
+            body: "*"
+        };
+    }
+
+    // Retrieves a paginated list of Todos
+    rpc ListTodos(ListTodosInput) returns (ListTodosOutput) {
+        option (google.api.http) = {
+            get: "/todos"
+        };
+    }
+}
+
+// Represents an individual task
+message Todo {
+    // Primary identifier
+    string id = 1;
+
+    // Boolean flag indicating whether or not the todo has been completed
+    bool complete = 2;
+
+    // Completion timestamp
+    google.protobuf.Timestamp completed_at = 3;
+
+    // Creation timestamp
+    google.protobuf.Timestamp created_at = 4;
+
+    // Optional detail
+    string description = 5;
+
+    // Task title
+    string title = 6;
+}
+
+// Describes the input to a CreateTodo operation
+message CreateTodoInput {
+    // Optional detail
+    // @inject_tag: validate:"min=3"
+    string description = 1;
+
+    // Task title
+    // @inject_tag: validate:"required,min=3"
+    string title = 2;
+}
+
+// Describes the output from a successful CreateTodo operation
+message CreateTodoOutput {
+    // Newly created Todo
+    Todo todo = 1;
+}
+
+// Describes the input to a ListTodos operation
+message ListTodosInput {
+    // Pagination offset
+    string after = 1;
+
+    // Page size
+    int32 first = 2;
+}
+
+// Describes the output from a successful ListTodos operation
+message ListTodosOutput {
+    // List of Todos
+    repeated Todo todos = 1;
+
+    // Total number of todos
+    int64 total = 2;
+}
