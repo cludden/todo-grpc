@@ -1,0 +1,6 @@
+FROM envoyproxy/envoy:latest
+
+RUN mkdir -p /var/log/envoy/
+COPY ./dist/linux_amd64/todos-graphql /usr/local/bin/todos-graphql
+COPY ./bin/init.graphql.sh /etc/init.graphql.sh
+CMD /etc/init.graphql.sh

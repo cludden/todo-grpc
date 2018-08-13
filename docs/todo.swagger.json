@@ -1,0 +1,198 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "todo.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/todos": {
+      "get": {
+        "summary": "Retrieves a paginated list of Todos",
+        "operationId": "ListTodos",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/todoListTodosOutput"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "after",
+            "description": "Pagination offset\n@inject_tag: validate:\"omitempty,numeric\".",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "first",
+            "description": "Page size\n@inject_tag: validate:\"omitempty,min=1,max=20\".",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "query",
+            "description": "Simple query string\n@inject_tag: validate:\"omitempty,min=3\".",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Todos"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new Todo",
+        "operationId": "CreateTodo",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/todoCreateTodoOutput"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/todoCreateTodoInput"
+            }
+          }
+        ],
+        "tags": [
+          "Todos"
+        ]
+      }
+    },
+    "/todos/{id}/completion": {
+      "post": {
+        "summary": "Mark an existing Todo as completed",
+        "operationId": "CompleteTodo",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/todoCompleteTodoOutput"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Primary identifier\n@inject_tag: validate:\"required\"",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Todos"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "todoCompleteTodoOutput": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/todoTodo",
+          "title": "Updated todo"
+        }
+      },
+      "title": "Describes the output from a successful CreateTodo operation"
+    },
+    "todoCreateTodoInput": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "title": "Optional detail\n@inject_tag: validate:\"omitempty,min=3\""
+        },
+        "title": {
+          "type": "string",
+          "title": "Task title\n@inject_tag: validate:\"required,min=3\""
+        }
+      },
+      "title": "Describes the input to a CreateTodo operation"
+    },
+    "todoCreateTodoOutput": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/todoTodo",
+          "title": "Newly created Todo"
+        }
+      },
+      "title": "Describes the output from a successful CreateTodo operation"
+    },
+    "todoListTodosOutput": {
+      "type": "object",
+      "properties": {
+        "todos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/todoTodo"
+          },
+          "title": "List of Todos"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Total number of todos"
+        }
+      },
+      "title": "Describes the output from a successful ListTodos operation"
+    },
+    "todoTodo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Primary identifier"
+        },
+        "complete": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "Boolean flag indicating whether or not the todo has been completed"
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Completion timestamp"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Creation timestamp"
+        },
+        "description": {
+          "type": "string",
+          "title": "Optional detail"
+        },
+        "title": {
+          "type": "string",
+          "title": "Task title"
+        }
+      },
+      "title": "Represents an individual task"
+    }
+  }
+}

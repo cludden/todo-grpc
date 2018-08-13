@@ -1,0 +1,63 @@
+version: "3"
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    environment:
+      discovery.type: single-node
+    ports:
+      - 9200:9200
+  
+  graphql:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-graphql
+    depends_on:
+      - todo-grpc
+    environment:
+      GRAPHQL_GRAPHIQL: "true"
+      GRAPHQL_PORT: 12000
+      GRAPHQL_TODOS_ENDPOINT: 127.0.0.1:9000
+      LOG_LEVEL: debug
+    expose:
+      - "12000"
+    ports:
+      - "12000:12000"
+    volumes:
+      - ./envoy.graphql.yaml:/etc/envoy.graphql.yaml
+  
+  todo-gateway:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-gateway
+    depends_on:
+      - todo-grpc
+    environment:
+      GRPC_GATEWAY_ENDPOINT: 127.0.0.1:9001
+      GRPC_GATEWAY_PORT: 11000
+    expose:
+      - "9001"
+      - "11000"
+    ports:
+      - "9001:9001"
+      - "11000:11000"
+    volumes:
+      - ./envoy.gw.yaml:/etc/envoy.gw.yaml
+  
+  todo-grpc:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-grpc
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      LOG_LEVEL: debug
+    expose:
+      - "8000"
+      - "10000"
+    ports:
+      - "8000-8005:8000"
+      - "10000-10005:10000"
+    volumes:
+      - ./envoy.grpc.yaml:/etc/envoy.grpc.yaml

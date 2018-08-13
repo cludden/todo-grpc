@@ -1,0 +1,14 @@
+
+schema: graphql/schema.graphql
+
+exec:
+  filename: graphql/generated/server.go
+  package: generated
+
+model:
+  filename: graphql/models/models.go
+  package: models
+
+models:
+  DateTime:
+    model: todo-grpc/graphql/scalars.DateTime

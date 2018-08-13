@@ -1,0 +1,70 @@
+builds:
+  # gateway server
+  - main: ./cmd/gateway
+    binary: todos-gateway
+    ldflags:
+      - -s -w -X attempts/resolver.version={{.Version}}
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=0
+  
+  # graphql server
+  - main: ./cmd/graphql
+    binary: todos-graphql
+    ldflags:
+      - -s -w -X attempts/resolver.version={{.Version}}
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=0
+
+  # grpc server
+  - main: ./cmd/grpc
+    binary: todos-grpc
+    ldflags:
+      - -s -w -X attempts/resolver.version={{.Version}}
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=0
+
+archive:
+  format: zip
+  name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+  files:
+    - README.md
+    - CHANGELOG.md
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+release:
+  # If set to true, will not auto-publish the release.
+  # Default is false.
+  draft: false
+
+  # If set to true, will mark the release as not ready for production.
+  # Default is false.
+  prerelease: false
+
+  # You can change the name of the GitHub release.
+  # This is parsed with the Go template engine and the following variables
+  # are available:
+  # - ProjectName
+  # - Tag
+  # - Version (Git tag without `v` prefix)
+  # Default is ``
+  name_template: "{{.Tag}}"

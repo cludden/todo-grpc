@@ -1,0 +1,6 @@
+FROM envoyproxy/envoy:latest
+
+RUN mkdir -p /var/log/envoy/
+COPY ./dist/linux_amd64/todos-gateway /usr/local/bin/todos-gateway
+COPY ./bin/init.gw.sh /etc/init.gw.sh
+CMD /etc/init.gw.sh
