@@ -7,6 +7,7 @@ a sample grpc application
 - [dep@v0.4](https://github.com/golang/dep)
 - [retool@v0.82](https://github.com/twitchtv/retool)
 - [protoc@v3](https://github.com/google/protobuf)
+- [docker@1.17](https://store.docker.com/search?type=edition&offering=community)
 - [a configured go workspace](https://golang.org/doc/code.html)
 
 ```shell
@@ -16,6 +17,29 @@ $ git clone https://github.com/Mindflash/todo-grpc $GOPATH/src/todo-grpc
 # install dependencies and sync vendored executables
 $ cd $GOPATH/src/todo-grpc && dep ensure -vendor-only && retool sync
 ```
+
+## Documentation
+- View the source code documentation at [localhost:6060/pkg/todo-grpc/](http://localhost:6060/pkg/todo-grpc/) with `godoc`:
+    ```shell
+    $ godoc -http=:6060
+    ```
+
+- View the protobuf source at [proto/todo.proto](proto/todo.proto):
+
+
+- View the grpc api documentation in your default browser:
+    ```shell
+    # on macos
+    $ open ./docs/index.html
+
+    # on linux
+    $ xdg-open ./docs/index.html
+    ```
+
+- View the json-over-http api documentation at [localhost:8080](http://localhost:8080) with `docker`:
+    ```shell
+    $ docker run -p 8080:8080 -e SWAGGER_JSON=/todo/todo.swagger.json -v $GOPATH/src/todo-grpc/docs:/todo -it swaggerapi/swagger-ui
+    ```
 
 ## Code Generation
 ```shell

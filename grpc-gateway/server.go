@@ -1,3 +1,5 @@
+// Package gateway provides a configured gRPC gateway server that proxies json over
+// http to protocol buffers over http2 (gRPC)
 package gateway
 
 import (
