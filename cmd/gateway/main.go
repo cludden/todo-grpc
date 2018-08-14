@@ -15,7 +15,7 @@ func main() {
 
 	// create resolver
 	r := resolver.NewResolver(c)
-	server, err := r.GRPCGatewayServer()
+	server, err := r.GatewayServer()
 	handleError(err)
 	handleError(server.Listen())
 }

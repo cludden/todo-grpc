@@ -47,7 +47,7 @@ message Todo {
 // Describes the input to a CreateTodo operation
 message CreateTodoInput {
     // Optional detail
-    // @inject_tag: validate:"min=3"
+    // @inject_tag: validate:"omitempty,min=3"
     string description = 1;
 
     // Task title
@@ -67,7 +67,7 @@ message ListTodosInput {
     string after = 1;
 
     // Page size
-    // @inject_tag: validate:"min=0,max=20"
+    // @inject_tag: validate:"omitempty,min=1,max=20"
     int32 first = 2;
 }
 

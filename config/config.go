@@ -13,7 +13,7 @@ type Config struct {
 		Port uint32 `validate:"required"`
 	} `validate:"required"`
 	GRPCGateway struct {
-		Endpoint string `validate:"required,min=3"`
+		Endpoint string `validate:"required"`
 		Port     uint32 `validate:"required"`
 	} `mapstructure:"grpc-gateway" validate:"required"`
 	Local struct {

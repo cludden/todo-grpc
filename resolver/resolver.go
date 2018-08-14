@@ -4,8 +4,8 @@ package resolver
 import (
 	"fmt"
 	"todo-grpc/config"
+	gw "todo-grpc/gateway"
 	"todo-grpc/grpc"
-	gw "todo-grpc/grpc-gateway"
 	"todo-grpc/local"
 	"todo-grpc/todo"
 
@@ -58,8 +58,8 @@ func (r *Resolver) GRPCServer() (*grpc.Server, error) {
 	return r.grpcServer, nil
 }
 
-// GRPCGatewayServer returns a singleton grpc gateway server value
-func (r *Resolver) GRPCGatewayServer() (*gw.Server, error) {
+// GatewayServer returns a singleton grpc gateway server value
+func (r *Resolver) GatewayServer() (*gw.Server, error) {
 	if r.grpcGatewayServer == nil {
 		c := r.Config()
 		server, err := gw.NewServer(&gw.Config{

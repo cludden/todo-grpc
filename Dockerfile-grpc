@@ -1,0 +1,6 @@
+FROM envoyproxy/envoy:latest
+
+RUN mkdir -p /var/log/envoy/
+COPY ./dist/linux_amd64/todos-grpc /usr/local/bin/todos-grpc
+COPY ./bin/init.grpc.sh /etc/init.grpc.sh
+CMD /etc/init.grpc.sh

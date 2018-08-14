@@ -34,7 +34,14 @@ func NewServer(c *Config) (*Server, error) {
 	}
 
 	// create server
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+	// grpc.StreamInterceptor(middleware.ChainStreamServer(
+	// 	grpcLogrus.StreamServerInterceptor(),
+	// )),
+	// grpc.UnaryInterceptor(middleware.ChainUnaryServer(
+	// 	grpcLogrus.UnaryServerInterceptor(),
+	// )),
+	)
 	proto.RegisterTodosServer(grpcServer, c.Server)
 	s := Server{
 		log:    c.Log,

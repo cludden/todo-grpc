@@ -29,6 +29,7 @@
   version = "v0.16.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/golang/protobuf"
   packages = [
     "jsonpb",
@@ -40,8 +41,20 @@
     "ptypes/struct",
     "ptypes/timestamp"
   ]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  revision = "20b6e0b198932a2f01dee489cf80a230766b65d6"
+
+[[projects]]
+  name = "github.com/grpc-ecosystem/go-grpc-middleware"
+  packages = [
+    ".",
+    "logging",
+    "logging/logrus",
+    "logging/logrus/ctxlogrus",
+    "tags",
+    "tags/logrus"
+  ]
+  revision = "c250d6563d4d4c20252cd865923440e829844f4e"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/grpc-ecosystem/grpc-gateway"
@@ -240,6 +253,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a8381a6d81ff0be69918f4573747297a8ab8b69d328072a9877b07edb09f3fb3"
+  inputs-digest = "277dc0e3b814a23c629be323d2ee1026e45a718bb2de05f8be75d7cdfe7453b7"
   solver-name = "gps-cdcl"
   solver-version = 1

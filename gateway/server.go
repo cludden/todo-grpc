@@ -18,7 +18,7 @@ import (
 
 // Config describes the input to a NewServer operation
 type Config struct {
-	Endpoint string             `validate:"required,uri"`
+	Endpoint string             `validate:"required"`
 	Log      logrus.FieldLogger `validate:"required"`
 	Port     uint32             `validate:"required"`
 }

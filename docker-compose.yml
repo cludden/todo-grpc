@@ -1,0 +1,33 @@
+version: "3"
+services:
+
+  todo-gateway:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-gateway
+    depends_on:
+      - todo-grpc
+    environment:
+      GRPC_GATEWAY_ENDPOINT: 127.0.0.1:9001
+      GRPC_GATEWAY_PORT: 11000
+    expose:
+      - "9000"
+      - "11000"
+    ports:
+      - "9000:9000"
+      - "11000:11000"
+    volumes:
+      - ./envoy.gw.yaml:/etc/envoy.gw.yaml
+  
+  todo-grpc:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-grpc
+    expose:
+      - "8000"
+      - "10000"
+    ports:
+      - "8000-8005:8000"
+      - "10000-10005:10000"
+    volumes:
+      - ./envoy.grpc.yaml:/etc/envoy.grpc.yaml

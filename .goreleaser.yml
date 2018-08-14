@@ -13,8 +13,8 @@ builds:
     env:
       - CGO_ENABLED=0
   
-  - main: ./cmd/grpc-gateway
-    binary: todos-grpc-gateway
+  - main: ./cmd/gateway
+    binary: todos-gateway
     ldflags:
       - -s -w -X attempts/resolver.version={{.Version}}
     goos:
