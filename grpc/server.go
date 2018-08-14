@@ -2,6 +2,7 @@
 package grpc
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"todo-grpc/proto"
@@ -21,7 +22,7 @@ type Config struct {
 // Server encapsulates an underlying gRPC server and provides methods for
 // interacting with it
 type Server struct {
-	log    logrus.FieldLogger
+	entry  *logrus.Entry
 	port   uint32
 	server *grpc.Server
 }
@@ -33,21 +34,21 @@ func NewServer(c *Config) (*Server, error) {
 		return nil, fmt.Errorf("invalid config: %v", err)
 	}
 
-	// create server
-	grpcServer := grpc.NewServer(
-	// grpc.StreamInterceptor(middleware.ChainStreamServer(
-	// 	grpcLogrus.StreamServerInterceptor(),
-	// )),
-	// grpc.UnaryInterceptor(middleware.ChainUnaryServer(
-	// 	grpcLogrus.UnaryServerInterceptor(),
-	// )),
-	)
-	proto.RegisterTodosServer(grpcServer, c.Server)
-	s := Server{
-		log:    c.Log,
-		port:   c.Port,
-		server: grpcServer,
+	log, ok := c.Log.(*logrus.Entry)
+	if !ok {
+		return nil, errors.New("invalid logger provided")
 	}
+
+	// create server base server
+	s := Server{
+		entry: log,
+		port:  c.Port,
+	}
+
+	// create grpc server
+	grpcServer := grpc.NewServer(s.Interceptors()...)
+	proto.RegisterTodosServer(grpcServer, c.Server)
+	s.server = grpcServer
 	return &s, nil
 }
 
@@ -58,6 +59,6 @@ func (s *Server) Listen() error {
 	if err != nil {
 		return fmt.Errorf("unable to create listener: %v", err)
 	}
-	s.log.Infof("grpc server listening on port %d", s.port)
+	s.entry.Infof("grpc server listening on port %d", s.port)
 	return s.server.Serve(lis)
 }
