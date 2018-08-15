@@ -30,18 +30,25 @@
         "parameters": [
           {
             "name": "after",
-            "description": "Pagination offset.",
+            "description": "Pagination offset\n@inject_tag: validate:\"omitempty,numeric\".",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "first",
-            "description": "Page size\n@inject_tag: validate:\"min=0,max=20\".",
+            "description": "Page size\n@inject_tag: validate:\"omitempty,min=1,max=20\".",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "query",
+            "description": "Simple query string\n@inject_tag: validate:\"omitempty,min=3\".",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -73,15 +80,62 @@
           "Todos"
         ]
       }
+    },
+    "/todos/complete": {
+      "post": {
+        "summary": "Mark an existing Todo as completed",
+        "operationId": "CompleteTodo",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/todoCompleteTodoOutput"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/todoCompleteTodoInput"
+            }
+          }
+        ],
+        "tags": [
+          "Todos"
+        ]
+      }
     }
   },
   "definitions": {
+    "todoCompleteTodoInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Primary identifier\n@inject_tag: validate:\"required\""
+        }
+      },
+      "title": "Describes the input to a CompleteTodo operation"
+    },
+    "todoCompleteTodoOutput": {
+      "type": "object",
+      "properties": {
+        "todo": {
+          "$ref": "#/definitions/todoTodo",
+          "title": "Updated todo"
+        }
+      },
+      "title": "Describes the output from a successful CreateTodo operation"
+    },
     "todoCreateTodoInput": {
       "type": "object",
       "properties": {
         "description": {
           "type": "string",
-          "title": "Optional detail\n@inject_tag: validate:\"min=3\""
+          "title": "Optional detail\n@inject_tag: validate:\"omitempty,min=3\""
         },
         "title": {
           "type": "string",
@@ -111,8 +165,8 @@
           "title": "List of Todos"
         },
         "total": {
-          "type": "string",
-          "format": "int64",
+          "type": "integer",
+          "format": "int32",
           "title": "Total number of todos"
         }
       },

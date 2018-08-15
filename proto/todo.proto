@@ -7,6 +7,14 @@ package mindflash.todo;
 option go_package = "proto";
 
 service Todos {
+    // Mark an existing Todo as completed
+    rpc CompleteTodo(CompleteTodoInput) returns (CompleteTodoOutput) {
+        option (google.api.http) = {
+            post: "/todos/complete"
+            body: "*"
+        };
+    }
+
     // Creates a new Todo
     rpc CreateTodo(CreateTodoInput) returns (CreateTodoOutput) {
         option (google.api.http) = {
@@ -26,22 +34,35 @@ service Todos {
 // Represents an individual task
 message Todo {
     // Primary identifier
-    string id = 1;
+    string id = 1 [json_name="id"];
 
     // Boolean flag indicating whether or not the todo has been completed
-    bool complete = 2;
+    bool complete = 2 [json_name="complete"];
 
     // Completion timestamp
-    google.protobuf.Timestamp completed_at = 3;
+    google.protobuf.Timestamp completed_at = 3 [json_name="completed_at"];
 
     // Creation timestamp
-    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp created_at = 4 [json_name="created_at"];
 
     // Optional detail
-    string description = 5;
+    string description = 5 [json_name="description"];
 
     // Task title
-    string title = 6;
+    string title = 6 [json_name="title"];
+}
+
+// Describes the input to a CompleteTodo operation
+message CompleteTodoInput {
+    // Primary identifier
+    // @inject_tag: validate:"required"
+    string id = 1;
+}
+
+// Describes the output from a successful CreateTodo operation
+message CompleteTodoOutput {
+    // Updated todo
+    Todo todo = 1;
 }
 
 // Describes the input to a CreateTodo operation
@@ -64,11 +85,16 @@ message CreateTodoOutput {
 // Describes the input to a ListTodos operation
 message ListTodosInput {
     // Pagination offset
+    // @inject_tag: validate:"omitempty,numeric"
     string after = 1;
 
     // Page size
     // @inject_tag: validate:"omitempty,min=1,max=20"
     int32 first = 2;
+
+    // Simple query string
+    // @inject_tag: validate:"omitempty,min=3"
+    string query = 3;
 }
 
 // Describes the output from a successful ListTodos operation
@@ -77,5 +103,5 @@ message ListTodosOutput {
     repeated Todo todos = 1;
 
     // Total number of todos
-    int64 total = 2;
+    int32 total = 2;
 }

@@ -1,6 +1,13 @@
 version: "3"
 services:
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    environment:
+      discovery.type: single-node
+    ports:
+      - 9200:9200
+
   todo-gateway:
     build:
       context: .
@@ -11,10 +18,10 @@ services:
       GRPC_GATEWAY_ENDPOINT: 127.0.0.1:9001
       GRPC_GATEWAY_PORT: 11000
     expose:
-      - "9000"
+      - "9001"
       - "11000"
     ports:
-      - "9000:9000"
+      - "9001:9001"
       - "11000:11000"
     volumes:
       - ./envoy.gw.yaml:/etc/envoy.gw.yaml
@@ -23,7 +30,10 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile-grpc
+    depends_on:
+      - elasticsearch
     environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
       LOG_LEVEL: debug
     expose:
       - "8000"

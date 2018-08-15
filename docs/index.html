@@ -179,6 +179,14 @@
             <ul>
               
                 <li>
+                  <a href="#mindflash.todo.CompleteTodoInput"><span class="badge">M</span>CompleteTodoInput</a>
+                </li>
+              
+                <li>
+                  <a href="#mindflash.todo.CompleteTodoOutput"><span class="badge">M</span>CompleteTodoOutput</a>
+                </li>
+              
+                <li>
                   <a href="#mindflash.todo.CreateTodoInput"><span class="badge">M</span>CreateTodoInput</a>
                 </li>
               
@@ -220,6 +228,53 @@
       <p></p>
 
       
+        <h3 id="mindflash.todo.CompleteTodoInput">CompleteTodoInput</h3>
+        <p>Describes the input to a CompleteTodo operation</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Primary identifier
+@inject_tag: validate:&#34;required&#34; </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
+        <h3 id="mindflash.todo.CompleteTodoOutput">CompleteTodoOutput</h3>
+        <p>Describes the output from a successful CreateTodo operation</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>todo</td>
+                  <td><a href="#mindflash.todo.Todo">Todo</a></td>
+                  <td></td>
+                  <td><p>Updated todo </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+        
+
+        
+      
         <h3 id="mindflash.todo.CreateTodoInput">CreateTodoInput</h3>
         <p>Describes the input to a CreateTodo operation</p>
 
@@ -235,7 +290,7 @@
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Optional detail
-@inject_tag: validate:&#34;min=3&#34; </p></td>
+@inject_tag: validate:&#34;omitempty,min=3&#34; </p></td>
                 </tr>
               
                 <tr>
@@ -289,7 +344,8 @@
                   <td>after</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Pagination offset </p></td>
+                  <td><p>Pagination offset
+@inject_tag: validate:&#34;omitempty,numeric&#34; </p></td>
                 </tr>
               
                 <tr>
@@ -297,7 +353,15 @@
                   <td><a href="#int32">int32</a></td>
                   <td></td>
                   <td><p>Page size
-@inject_tag: validate:&#34;min=0,max=20&#34; </p></td>
+@inject_tag: validate:&#34;omitempty,min=1,max=20&#34; </p></td>
+                </tr>
+              
+                <tr>
+                  <td>query</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Simple query string
+@inject_tag: validate:&#34;omitempty,min=3&#34; </p></td>
                 </tr>
               
             </tbody>
@@ -325,7 +389,7 @@
               
                 <tr>
                   <td>total</td>
-                  <td><a href="#int64">int64</a></td>
+                  <td><a href="#int32">int32</a></td>
                   <td></td>
                   <td><p>Total number of todos </p></td>
                 </tr>
@@ -407,6 +471,13 @@
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
           </thead>
           <tbody>
+            
+              <tr>
+                <td>CompleteTodo</td>
+                <td><a href="#mindflash.todo.CompleteTodoInput">CompleteTodoInput</a></td>
+                <td><a href="#mindflash.todo.CompleteTodoOutput">CompleteTodoOutput</a></td>
+                <td><p>Mark an existing Todo as completed</p></td>
+              </tr>
             
               <tr>
                 <td>CreateTodo</td>

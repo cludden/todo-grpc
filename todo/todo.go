@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"errors"
 	"time"
 	"todo-grpc/proto"
 
@@ -10,16 +11,19 @@ import (
 
 // Todo domain type
 type Todo struct {
-	ID          string
-	Complete    bool
-	CompletedAt null.Time
-	CreatedAt   time.Time
-	Description null.String
-	Title       string
+	ID          string      `json:"id"`
+	Complete    bool        `json:"complete"`
+	CompletedAt null.Time   `json:"completed_at"`
+	CreatedAt   time.Time   `json:"created_at"`
+	Description null.String `json:"description"`
+	Title       string      `json:"title"`
 }
 
 // MarshalPB returns a valid protobuf message
 func (t *Todo) MarshalPB() (*proto.Todo, error) {
+	if t == nil {
+		return nil, errors.New("unable to marshal nil todo")
+	}
 	todo := proto.Todo{
 		Id:          t.ID,
 		Complete:    t.Complete,

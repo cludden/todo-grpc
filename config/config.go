@@ -9,6 +9,11 @@ import (
 
 // Config describes the optional and required application configuration
 type Config struct {
+	Elasticsearch struct {
+		Index string `validate:"required"`
+		Type  string `validate:"required"`
+		URL   string `validate:"required"`
+	} `validate:"required"`
 	GRPC struct {
 		Port uint32 `validate:"required"`
 	} `validate:"required"`
@@ -16,9 +21,6 @@ type Config struct {
 		Endpoint string `validate:"required"`
 		Port     uint32 `validate:"required"`
 	} `mapstructure:"grpc-gateway" validate:"required"`
-	Local struct {
-		Path string `validate:"required"`
-	} `validate:"required"`
 	Log struct {
 		Level string `validate:"required"`
 	} `validate:"required"`
@@ -33,11 +35,15 @@ func New() (*Config, error) {
 	viper.AddConfigPath("/etc/todos")
 	viper.AddConfigPath(".")
 
+	viper.SetDefault("elasticsearch.index", "todos")
+	viper.SetDefault("elasticsearch.type", "doc")
 	viper.SetDefault("grpc.port", 10000)
 	viper.SetDefault("grpc-gateway.port", 10001)
-	viper.SetDefault("local.path", "todos.db")
 	viper.SetDefault("log.level", "info")
 
+	viper.BindEnv("elasticsearch.index", "ELASTICSEARCH_INDEX")
+	viper.BindEnv("elasticsearch.type", "ELASTICSEARCH_TYPE")
+	viper.BindEnv("elasticsearch.url", "ELASTICSEARCH_URL")
 	viper.BindEnv("grpc.port", "GRPC_PORT")
 	viper.BindEnv("grpc-gateway.endpoint", "GRPC_GATEWAY_ENDPOINT")
 	viper.BindEnv("grpc-gateway.port", "GRPC_GATEWAY_PORT")

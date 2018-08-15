@@ -7,6 +7,10 @@ import (
 	"todo-grpc/proto"
 	"todo-grpc/validation"
 
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+
+	uuid "github.com/satori/go.uuid"
 	"gopkg.in/guregu/null.v3"
 )
 
@@ -33,31 +37,56 @@ func NewServer(c *Config) (*Server, error) {
 	return &s, nil
 }
 
+// CompleteTodo marks an existing todo as completed
+func (s *Server) CompleteTodo(ctx context.Context, in *proto.CompleteTodoInput) (*proto.CompleteTodoOutput, error) {
+	// validate input
+	if err := validation.Validate.Struct(in); err != nil {
+		return nil, grpc.Errorf(codes.InvalidArgument, "invalid input: %v", err)
+	}
+
+	// update todo
+	todo, err := s.repo.CompleteTodo(ctx, in.GetId())
+	if err != nil {
+		return nil, grpc.Errorf(codes.Internal, "unexpected error updating todo: %v", err)
+	}
+
+	// marshal todo
+	marshalled, err := todo.MarshalPB()
+	if err != nil {
+		return nil, grpc.Errorf(codes.Internal, "error marshalling output: %v", err)
+	}
+
+	// define output
+	out := proto.CompleteTodoOutput{
+		Todo: marshalled,
+	}
+	return &out, nil
+}
+
 // CreateTodo creates a new todo task
 func (s *Server) CreateTodo(ctx context.Context, in *proto.CreateTodoInput) (*proto.CreateTodoOutput, error) {
 	// validate input
 	if err := validation.Validate.Struct(in); err != nil {
-		return nil, fmt.Errorf("invalid input: %v", err)
+		return nil, grpc.Errorf(codes.InvalidArgument, "invalid input: %v", err)
 	}
 
 	// create todo
-	now := time.Now()
 	record := Todo{
-		ID:          now.Format(time.RFC3339Nano),
+		ID:          uuid.NewV4().String(),
 		Complete:    false,
 		CompletedAt: null.NewTime(time.Time{}, false),
-		CreatedAt:   now,
+		CreatedAt:   time.Now(),
 		Description: null.StringFrom(in.GetDescription()),
 		Title:       in.Title,
 	}
 	if err := s.repo.CreateTodo(ctx, &record); err != nil {
-		return nil, fmt.Errorf("unexpected error creating todo: %v", err)
+		return nil, grpc.Errorf(codes.Internal, "unexpected error creating todo: %v", err)
 	}
 
 	// marshal output
 	todo, err := record.MarshalPB()
 	if err != nil {
-		return nil, fmt.Errorf("error marshalling output: %v", err)
+		return nil, grpc.Errorf(codes.Internal, "error marshalling output: %v", err)
 	}
 
 	// define output
@@ -71,7 +100,7 @@ func (s *Server) CreateTodo(ctx context.Context, in *proto.CreateTodoInput) (*pr
 func (s *Server) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*proto.ListTodosOutput, error) {
 	// validate input
 	if err := validation.Validate.Struct(in); err != nil {
-		return nil, fmt.Errorf("invalid input: %v", err)
+		return nil, grpc.Errorf(codes.InvalidArgument, "invalid input: %v", err)
 	} else if in.First == 0 {
 		in.First = 20
 	}
@@ -79,12 +108,12 @@ func (s *Server) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*prot
 	// retrieve todos
 	res, err := s.repo.ListTodos(ctx, in)
 	if err != nil {
-		return nil, fmt.Errorf("unexpected error retrieving todos: %v", err)
+		return nil, grpc.Errorf(codes.Internal, "unexpected error retrieving todo: %v", err)
 	}
 
 	// define output
 	out := proto.ListTodosOutput{
-		Todos: make([]*proto.Todo, res.Total),
+		Todos: make([]*proto.Todo, len(res.Todos)),
 		Total: res.Total,
 	}
 
@@ -92,7 +121,7 @@ func (s *Server) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*prot
 	for i, t := range res.Todos {
 		todo, err := t.MarshalPB()
 		if err != nil {
-			return nil, fmt.Errorf("error marshalling output: %v", err)
+			return nil, grpc.Errorf(codes.Internal, "error marshalling output: %v", err)
 		}
 		out.Todos[i] = todo
 	}
