@@ -18,6 +18,13 @@ $ git clone https://github.com/Mindflash/todo-grpc $GOPATH/src/todo-grpc
 $ cd $GOPATH/src/todo-grpc && dep ensure -vendor-only && retool sync
 ```
 
+## Getting Started
+1. [Build the application](#Building)
+2. Run the application with docker
+    ```shell
+    $ docker-compose up -d elasticsearch && docker-compose up --scale todo-grpc=3
+    ```
+
 ## Documentation
 - View the source code documentation at [localhost:6060/pkg/todo-grpc/](http://localhost:6060/pkg/todo-grpc/) with `godoc`:
     ```shell
