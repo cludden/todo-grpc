@@ -114,7 +114,7 @@ func (m *Todo) GetTitle() string {
 type CompleteTodoInput struct {
 	// Primary identifier
 	// @inject_tag: validate:"required"
-	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" validate:"required"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -195,10 +195,10 @@ func (m *CompleteTodoOutput) GetTodo() *Todo {
 type CreateTodoInput struct {
 	// Optional detail
 	// @inject_tag: validate:"omitempty,min=3"
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty" validate:"omitempty,min=3"`
 	// Task title
 	// @inject_tag: validate:"required,min=3"
-	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty" validate:"required,min=3"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -286,13 +286,13 @@ func (m *CreateTodoOutput) GetTodo() *Todo {
 type ListTodosInput struct {
 	// Pagination offset
 	// @inject_tag: validate:"omitempty,numeric"
-	After string `protobuf:"bytes,1,opt,name=after,proto3" json:"after,omitempty"`
+	After string `protobuf:"bytes,1,opt,name=after,proto3" json:"after,omitempty" validate:"omitempty,numeric"`
 	// Page size
 	// @inject_tag: validate:"omitempty,min=1,max=20"
-	First int32 `protobuf:"varint,2,opt,name=first,proto3" json:"first,omitempty"`
+	First int32 `protobuf:"varint,2,opt,name=first,proto3" json:"first,omitempty" validate:"omitempty,min=1,max=20"`
 	// Simple query string
 	// @inject_tag: validate:"omitempty,min=3"
-	Query                string   `protobuf:"bytes,3,opt,name=query,proto3" json:"query,omitempty"`
+	Query                string   `protobuf:"bytes,3,opt,name=query,proto3" json:"query,omitempty" validate:"omitempty,min=3"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`

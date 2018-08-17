@@ -3,10 +3,6 @@ import { BaseContext } from 'koa';
 import { DataTypeAbstract, DefineAttributeColumnOptions } from "sequelize";
 
 export interface Config {
-  elasticsearch: {
-    aws?: boolean,
-    host: string | string[],
-  },
   graphql: {
     enable_graphiql?: boolean,
     enable_mocking?: boolean,
@@ -18,14 +14,9 @@ export interface Config {
   log: {
     level: bunyan.LogLevelString
   },
-  mysql: {
-    database: string,
-    host: string,
-    password: string,
-    port?: number,
-    sync: boolean,
-    user: string,
-  }
+  todos: {
+    endpoint: string,
+  },
 }
 
 export interface GraphqlContext {
