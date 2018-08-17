@@ -1,0 +1,95 @@
+# Represents a moment in time
+scalar DateTime
+
+# Describes the input to a completeTodo mutation
+input CompleteTodoInput {
+    # Primary identifier
+    id: ID!
+}
+
+# Describes the input to a createTodo mutation
+input CreateTodoInput {
+    # Optional task detail
+    description: String
+
+    # Task title
+    title: String!
+}
+
+# Describes the root mutation entrypoints
+type Mutation {
+    # Mark an existing Todo as completed
+    completeTodo(input: CompleteTodoInput!): Todo
+
+    # Create a new Todo
+    createTodo(input: CreateTodoInput!): Todo
+}
+
+# Describes a vertex in the graph
+interface Node {
+    # Primary identifier
+    id: ID!
+}
+
+# Describes pagination information
+type PageInfo {
+    # The total number of items represented by the connection
+    total: Int
+}
+
+# Describes the root query entrypoints
+type Query {
+    # Retrieves a paginated list of todos
+    todos(input: TodosQueryInput!): TodosQueryConnection
+}
+
+# Represents an individual task
+type Todo implements Node {
+    # Primary identifier
+    id: ID!
+
+    # Boolean flag indicating whether or not the todo has been completed
+    complete: Boolean!
+
+    # Completion timestamp
+    completed_at: DateTime
+
+    # Creation timestamp
+    created_at: DateTime!
+
+    # Optional detail
+    description: String
+
+    # Task title
+    title: String!
+}
+
+# Root todos query connection
+type TodosQueryConnection {
+    # List of edges
+    edges: [TodosQueryEdge]
+
+    # Pagination information
+    pageInfo: PageInfo
+}
+
+# Edge type for a TodosQueryConnection
+type TodosQueryEdge {
+    # Pagination cursor
+    cursor: String!
+
+    # Item at the end of the edge
+    node: Todo
+}
+
+# Describes the input to the root todos query
+input TodosQueryInput {
+    # Pagination offset
+    after: String
+
+    # Page size
+    first: Int
+
+    # Optional query string
+    query: String
+}

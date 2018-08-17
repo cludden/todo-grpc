@@ -23,6 +23,10 @@
     {
       "Repository": "github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc",
       "Commit": "a642403e008aa148943781f19eed4a8d49e3d1a0"
+    },
+    {
+      "Repository": "github.com/99designs/gqlgen",
+      "Commit": "5a0b56aa613bf7604688f2c5f8f10ec586aec835"
     }
   ],
   "RetoolVersion": "1.3.7"

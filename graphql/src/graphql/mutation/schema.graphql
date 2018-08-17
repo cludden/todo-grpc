@@ -1,0 +1,8 @@
+# Describes the root mutation entrypoints
+type Mutation {
+    # Mark an existing Todo as completed
+    completeTodo(input: CompleteTodoInput!): Todo
+
+    # Create a new Todo
+    createTodo(input: CreateTodoInput!): Todo
+}

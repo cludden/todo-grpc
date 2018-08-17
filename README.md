@@ -64,6 +64,11 @@ $ retool do protoc \
     --swagger_out=logtostderr=true:$GOPATH/src/todo-grpc/docs \
     --doc_out=$GOPATH/src/todo-grpc/docs \
     --doc_opt=html,index.html \
+    --grpc_out=graphql/src/repositories \
+    --js_out=import_style=commonjs,binary:graphql/src/repositories \
+    --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` \
+    --ts_out=graphql/src/repositories \
+    --plugin=protoc-gen-ts=$GOPATH/src/todo-grpc/graphql/node_modules/.bin/protoc-gen-ts \
     todo.proto
 
 # do post processing

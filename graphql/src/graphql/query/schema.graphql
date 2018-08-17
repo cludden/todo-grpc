@@ -1,0 +1,5 @@
+# Describes the root query entrypoints
+type Query {
+    # Retrieves a paginated list of todos
+    todos(input: TodosQueryInput!): TodosQueryConnection
+}
