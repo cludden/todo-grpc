@@ -11,6 +11,12 @@
   version = "0.4.3"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/agnivade/levenshtein"
+  packages = ["."]
+  revision = "3d21ba515fe27b856f230847e856431ae1724adc"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
@@ -180,8 +186,13 @@
   branch = "master"
   name = "github.com/vektah/gqlparser"
   packages = [
+    ".",
     "ast",
-    "gqlerror"
+    "gqlerror",
+    "lexer",
+    "parser",
+    "validator",
+    "validator/rules"
   ]
   revision = "04021c23cb3810632117e34c3e0e3d415a202c63"
 
@@ -298,6 +309,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "37f9313b0eb5a75f7f07304bc58fe405b464c88103a9c188eb4c299af263a94c"
+  inputs-digest = "b47b403a9d84858a54997ea9cfe160d3767fb42d7cbfd396336862c14ead346d"
   solver-name = "gps-cdcl"
   solver-version = 1

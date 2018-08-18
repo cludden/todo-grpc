@@ -8,3 +8,7 @@ exec:
 model:
   filename: graphql/models/models.go
   package: models
+
+models:
+  DateTime:
+    model: todo-grpc/graphql/scalars.DateTime

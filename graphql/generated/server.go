@@ -7,7 +7,9 @@ import (
 	context "context"
 	fmt "fmt"
 	strconv "strconv"
+	time "time"
 	models "todo-grpc/graphql/models"
+	scalars "todo-grpc/graphql/scalars"
 
 	graphql "github.com/99designs/gqlgen/graphql"
 	introspection "github.com/99designs/gqlgen/graphql/introspection"
@@ -44,8 +46,8 @@ type QueryResolver interface {
 	Todos(ctx context.Context, input models.TodosQueryInput) (*models.TodosQueryConnection, error)
 }
 type TodoResolver interface {
-	CompletedAt(ctx context.Context, obj *models.Todo) (*string, error)
-	CreatedAt(ctx context.Context, obj *models.Todo) (string, error)
+	CompletedAt(ctx context.Context, obj *models.Todo) (*time.Time, error)
+	CreatedAt(ctx context.Context, obj *models.Todo) (time.Time, error)
 }
 
 type executableSchema struct {
@@ -446,11 +448,11 @@ func (ec *executionContext) _Todo_completed_at(ctx context.Context, field graphq
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.(*string)
+		res := resTmp.(*time.Time)
 		if res == nil {
 			return graphql.Null
 		}
-		return graphql.MarshalString(*res)
+		return scalars.MarshalDateTime(*res)
 	})
 }
 
@@ -475,8 +477,8 @@ func (ec *executionContext) _Todo_created_at(ctx context.Context, field graphql.
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.(string)
-		return graphql.MarshalString(res)
+		res := resTmp.(time.Time)
+		return scalars.MarshalDateTime(res)
 	})
 }
 

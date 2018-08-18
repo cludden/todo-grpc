@@ -2,6 +2,10 @@
 
 package models
 
+import (
+	time "time"
+)
+
 type CompleteTodoInput struct {
 	ID string `json:"id"`
 }
@@ -14,12 +18,12 @@ type PageInfo struct {
 	Total *int `json:"total"`
 }
 type Todo struct {
-	ID          string  `json:"id"`
-	Complete    bool    `json:"complete"`
-	CompletedAt *string `json:"completed_at"`
-	CreatedAt   string  `json:"created_at"`
-	Description *string `json:"description"`
-	Title       string  `json:"title"`
+	ID          string     `json:"id"`
+	Complete    bool       `json:"complete"`
+	CompletedAt *time.Time `json:"completed_at"`
+	CreatedAt   time.Time  `json:"created_at"`
+	Description *string    `json:"description"`
+	Title       string     `json:"title"`
 }
 type TodosQueryConnection struct {
 	Edges    []*TodosQueryEdge `json:"edges"`
