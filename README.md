@@ -16,6 +16,11 @@ $ git clone https://github.com/Mindflash/todo-grpc $GOPATH/src/todo-grpc
 
 # install dependencies and sync vendored executables
 $ cd $GOPATH/src/todo-grpc && dep ensure -vendor-only && retool sync
+
+# install global plugins
+$ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+$ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+$ npm install -g grpc-tools
 ```
 
 ## Getting Started
@@ -49,6 +54,7 @@ $ cd $GOPATH/src/todo-grpc && dep ensure -vendor-only && retool sync
     ```
 
 ## Code Generation
+
 ```shell
 # set protoc path pointing to the root protoc directory (containing bin, include)
 $ export PROTOC_PATH=/path/to/protoc
@@ -67,7 +73,7 @@ $ retool do protoc \
     --grpc_out=graphql/src/repositories \
     --js_out=import_style=commonjs,binary:graphql/src/repositories \
     --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` \
-    --ts_out=service=true:graphql/src/repositories \
+    --ts_out=graphql/src/repositories \
     --plugin=protoc-gen-ts=$GOPATH/src/todo-grpc/graphql/node_modules/.bin/protoc-gen-ts \
     todo.proto
 

@@ -1,5 +1,0 @@
-# Represents a requestable entity
-interface Node {
-    # Primary node identifier
-    id: ID!
-}

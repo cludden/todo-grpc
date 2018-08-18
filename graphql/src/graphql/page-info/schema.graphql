@@ -1,5 +1,0 @@
-# Connection pagination info
-type PageInfo {
-    # Total number of items represented by the connection
-    total: Int
-}

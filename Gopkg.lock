@@ -2,6 +2,15 @@
 
 
 [[projects]]
+  name = "github.com/99designs/gqlgen"
+  packages = [
+    "graphql",
+    "graphql/introspection"
+  ]
+  revision = "3575c289486fce174c941b63749b9bbb88c3ca90"
+  version = "0.4.3"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
@@ -169,6 +178,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/vektah/gqlparser"
+  packages = [
+    "ast",
+    "gqlerror"
+  ]
+  revision = "04021c23cb3810632117e34c3e0e3d415a202c63"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
@@ -280,6 +298,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b1caa6770795f5b89d4f153a12fe6e0a4dd8dd8ed7a6946738cf7cf74c253825"
+  inputs-digest = "37f9313b0eb5a75f7f07304bc58fe405b464c88103a9c188eb4c299af263a94c"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -52,3 +52,7 @@
 [[constraint]]
   name = "github.com/sirupsen/logrus"
   version = "1.0.6"
+
+[[constraint]]
+  name = "github.com/99designs/gqlgen"
+  version = "0.4.3"

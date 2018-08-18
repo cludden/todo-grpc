@@ -48,7 +48,7 @@ func (m *Todo) Reset()         { *m = Todo{} }
 func (m *Todo) String() string { return proto.CompactTextString(m) }
 func (*Todo) ProtoMessage()    {}
 func (*Todo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_todo_d10ede8f3e772fa6, []int{0}
+	return fileDescriptor_todo_81b520ac3d42257e, []int{0}
 }
 func (m *Todo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Todo.Unmarshal(m, b)
@@ -114,7 +114,7 @@ func (m *Todo) GetTitle() string {
 type CompleteTodoInput struct {
 	// Primary identifier
 	// @inject_tag: validate:"required"
-	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" validate:"required"`
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -124,7 +124,7 @@ func (m *CompleteTodoInput) Reset()         { *m = CompleteTodoInput{} }
 func (m *CompleteTodoInput) String() string { return proto.CompactTextString(m) }
 func (*CompleteTodoInput) ProtoMessage()    {}
 func (*CompleteTodoInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_todo_d10ede8f3e772fa6, []int{1}
+	return fileDescriptor_todo_81b520ac3d42257e, []int{1}
 }
 func (m *CompleteTodoInput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CompleteTodoInput.Unmarshal(m, b)
@@ -164,7 +164,7 @@ func (m *CompleteTodoOutput) Reset()         { *m = CompleteTodoOutput{} }
 func (m *CompleteTodoOutput) String() string { return proto.CompactTextString(m) }
 func (*CompleteTodoOutput) ProtoMessage()    {}
 func (*CompleteTodoOutput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_todo_d10ede8f3e772fa6, []int{2}
+	return fileDescriptor_todo_81b520ac3d42257e, []int{2}
 }
 func (m *CompleteTodoOutput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CompleteTodoOutput.Unmarshal(m, b)
@@ -195,10 +195,10 @@ func (m *CompleteTodoOutput) GetTodo() *Todo {
 type CreateTodoInput struct {
 	// Optional detail
 	// @inject_tag: validate:"omitempty,min=3"
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty" validate:"omitempty,min=3"`
+	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	// Task title
 	// @inject_tag: validate:"required,min=3"
-	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty" validate:"required,min=3"`
+	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -208,7 +208,7 @@ func (m *CreateTodoInput) Reset()         { *m = CreateTodoInput{} }
 func (m *CreateTodoInput) String() string { return proto.CompactTextString(m) }
 func (*CreateTodoInput) ProtoMessage()    {}
 func (*CreateTodoInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_todo_d10ede8f3e772fa6, []int{3}
+	return fileDescriptor_todo_81b520ac3d42257e, []int{3}
 }
 func (m *CreateTodoInput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateTodoInput.Unmarshal(m, b)
@@ -255,7 +255,7 @@ func (m *CreateTodoOutput) Reset()         { *m = CreateTodoOutput{} }
 func (m *CreateTodoOutput) String() string { return proto.CompactTextString(m) }
 func (*CreateTodoOutput) ProtoMessage()    {}
 func (*CreateTodoOutput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_todo_d10ede8f3e772fa6, []int{4}
+	return fileDescriptor_todo_81b520ac3d42257e, []int{4}
 }
 func (m *CreateTodoOutput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateTodoOutput.Unmarshal(m, b)
@@ -286,13 +286,13 @@ func (m *CreateTodoOutput) GetTodo() *Todo {
 type ListTodosInput struct {
 	// Pagination offset
 	// @inject_tag: validate:"omitempty,numeric"
-	After string `protobuf:"bytes,1,opt,name=after,proto3" json:"after,omitempty" validate:"omitempty,numeric"`
+	After string `protobuf:"bytes,1,opt,name=after,proto3" json:"after,omitempty"`
 	// Page size
 	// @inject_tag: validate:"omitempty,min=1,max=20"
-	First int32 `protobuf:"varint,2,opt,name=first,proto3" json:"first,omitempty" validate:"omitempty,min=1,max=20"`
+	First int32 `protobuf:"varint,2,opt,name=first,proto3" json:"first,omitempty"`
 	// Simple query string
 	// @inject_tag: validate:"omitempty,min=3"
-	Query                string   `protobuf:"bytes,3,opt,name=query,proto3" json:"query,omitempty" validate:"omitempty,min=3"`
+	Query                string   `protobuf:"bytes,3,opt,name=query,proto3" json:"query,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -302,7 +302,7 @@ func (m *ListTodosInput) Reset()         { *m = ListTodosInput{} }
 func (m *ListTodosInput) String() string { return proto.CompactTextString(m) }
 func (*ListTodosInput) ProtoMessage()    {}
 func (*ListTodosInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_todo_d10ede8f3e772fa6, []int{5}
+	return fileDescriptor_todo_81b520ac3d42257e, []int{5}
 }
 func (m *ListTodosInput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListTodosInput.Unmarshal(m, b)
@@ -358,7 +358,7 @@ func (m *ListTodosOutput) Reset()         { *m = ListTodosOutput{} }
 func (m *ListTodosOutput) String() string { return proto.CompactTextString(m) }
 func (*ListTodosOutput) ProtoMessage()    {}
 func (*ListTodosOutput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_todo_d10ede8f3e772fa6, []int{6}
+	return fileDescriptor_todo_81b520ac3d42257e, []int{6}
 }
 func (m *ListTodosOutput) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ListTodosOutput.Unmarshal(m, b)
@@ -546,9 +546,9 @@ var _Todos_serviceDesc = grpc.ServiceDesc{
 	Metadata: "todo.proto",
 }
 
-func init() { proto.RegisterFile("todo.proto", fileDescriptor_todo_d10ede8f3e772fa6) }
+func init() { proto.RegisterFile("todo.proto", fileDescriptor_todo_81b520ac3d42257e) }
 
-var fileDescriptor_todo_d10ede8f3e772fa6 = []byte{
+var fileDescriptor_todo_81b520ac3d42257e = []byte{
 	// 466 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xcf, 0x6a, 0xdb, 0x40,
 	0x10, 0xc6, 0x91, 0x62, 0xb9, 0xf6, 0x38, 0xd8, 0xcd, 0xe2, 0x83, 0x58, 0x4a, 0xad, 0x6e, 0x2f,

@@ -1,5 +1,0 @@
-# Describes the input to a completeTodo mutation
-input CompleteTodoInput {
-    # Primary identifier
-    id: ID!
-}
