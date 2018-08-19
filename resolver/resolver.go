@@ -6,10 +6,13 @@ import (
 	"todo-grpc/config"
 	"todo-grpc/elasticsearch"
 	gw "todo-grpc/gateway"
+	"todo-grpc/graphql"
 	"todo-grpc/grpc"
+	"todo-grpc/proto"
 	"todo-grpc/todo"
 
 	"github.com/sirupsen/logrus"
+	g "google.golang.org/grpc"
 )
 
 var version string
@@ -19,9 +22,11 @@ type Resolver struct {
 	config                  config.Config
 	elasticsearchRepository todo.Repository
 	log                     logrus.FieldLogger
+	graphqlServer           *graphql.Server
 	grpcServer              *grpc.Server
 	grpcGatewayServer       *gw.Server
-	todoServer              *todo.Server
+	todosClient             proto.TodosClient
+	todosServer             proto.TodosServer
 }
 
 // NewResolver returns a new resolver value
@@ -55,11 +60,33 @@ func (r *Resolver) ElasticsearchRepository() (todo.Repository, error) {
 	return r.elasticsearchRepository, nil
 }
 
+// GraphQLServer returns a singleton graphql server value
+func (r *Resolver) GraphQLServer() (*graphql.Server, error) {
+	if r.graphqlServer == nil {
+		c := r.Config()
+		todos, err := r.TodosClient()
+		if err != nil {
+			return nil, err
+		}
+		server, err := graphql.NewServer(&graphql.Config{
+			Graphiql: c.GraphQL.Graphiql,
+			Log:      r.Log().WithField("pkg", "graphql"),
+			Port:     c.GraphQL.Port,
+			Todos:    todos,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("error resolving graphql server: %v", err)
+		}
+		r.graphqlServer = server
+	}
+	return r.graphqlServer, nil
+}
+
 // GRPCServer returns a singleton grpc server value
 func (r *Resolver) GRPCServer() (*grpc.Server, error) {
 	if r.grpcServer == nil {
 		c := r.Config()
-		s, err := r.TodoServer()
+		s, err := r.TodosServer()
 		if err != nil {
 			return nil, err
 		}
@@ -111,9 +138,22 @@ func (r *Resolver) Log() logrus.FieldLogger {
 	return r.log
 }
 
-// TodoServer returns a singleton todo server value
-func (r *Resolver) TodoServer() (*todo.Server, error) {
-	if r.todoServer == nil {
+// TodosClient returns a singleton todo client value
+func (r *Resolver) TodosClient() (proto.TodosClient, error) {
+	if r.todosClient == nil {
+		c := r.Config()
+		conn, err := g.Dial(c.GraphQL.TodosEndpoint, g.WithInsecure())
+		if err != nil {
+			return nil, fmt.Errorf("error resolving todos client: %v", err)
+		}
+		r.todosClient = proto.NewTodosClient(conn)
+	}
+	return r.todosClient, nil
+}
+
+// TodosServer returns a singleton todo server value
+func (r *Resolver) TodosServer() (proto.TodosServer, error) {
+	if r.todosServer == nil {
 		repo, err := r.ElasticsearchRepository()
 		if err != nil {
 			return nil, err
@@ -124,7 +164,7 @@ func (r *Resolver) TodoServer() (*todo.Server, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error resolving todo server: %v", err)
 		}
-		r.todoServer = server
+		r.todosServer = server
 	}
-	return r.todoServer, nil
+	return r.todosServer, nil
 }

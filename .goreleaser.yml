@@ -1,8 +1,8 @@
 # This is an example goreleaser.yaml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
 builds:
-  - main: ./cmd/grpc
-    binary: todos-grpc
+  - main: ./cmd/gateway
+    binary: todos-gateway
     ldflags:
       - -s -w -X attempts/resolver.version={{.Version}}
     goos:
@@ -13,8 +13,20 @@ builds:
     env:
       - CGO_ENABLED=0
   
-  - main: ./cmd/gateway
-    binary: todos-gateway
+  - main: ./cmd/graphql
+    binary: todos-graphql
+    ldflags:
+      - -s -w -X attempts/resolver.version={{.Version}}
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=0
+
+  - main: ./cmd/grpc
+    binary: todos-grpc
     ldflags:
       - -s -w -X attempts/resolver.version={{.Version}}
     goos:

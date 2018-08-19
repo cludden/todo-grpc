@@ -1,19 +1,19 @@
-package graphql
+package resolvers
 
 import (
 	"context"
+	"strconv"
 	"time"
 	"todo-grpc/graphql/models"
 	"todo-grpc/proto"
 
 	"github.com/golang/protobuf/ptypes"
-
+	"github.com/vektah/gqlparser/gqlerror"
 	null "gopkg.in/guregu/null.v3"
 )
 
 // Todos implements the Todo type resolver
-type Todos struct {
-}
+type Todos Resolver
 
 // CompletedAt field resolver
 func (t *Todos) CompletedAt(ctx context.Context, todo *models.Todo) (*time.Time, error) {
@@ -37,10 +37,10 @@ func (m *Mutations) CompleteTodo(ctx context.Context, input models.CompleteTodoI
 		Id: input.ID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, gqlerror.Errorf("todos error: %v", err)
 	}
 
-	return UnmarshalTodoPB(res.GetTodo())
+	return unmarshalTodoPB(res.GetTodo())
 }
 
 // CreateTodo creates a new Todo
@@ -50,41 +50,56 @@ func (m *Mutations) CreateTodo(ctx context.Context, input models.CreateTodoInput
 		Title:       input.Title,
 	})
 	if err != nil {
-		return nil, err
+		return nil, gqlerror.Errorf("todos error: %v", err)
 	}
 
-	return UnmarshalTodoPB(res.GetTodo())
+	return unmarshalTodoPB(res.GetTodo())
 }
 
 // Todos retrieves a paginated list of Todos
 func (q *Query) Todos(ctx context.Context, input models.TodosQueryInput) (*models.TodosQueryConnection, error) {
+	// define query params
 	params := proto.ListTodosInput{
 		After: null.StringFromPtr(input.After).ValueOrZero(),
+		First: 20,
 		Query: null.StringFromPtr(input.Query).ValueOrZero(),
 	}
 	if input.First != nil {
 		params.First = int32(*input.First)
 	}
 
-	res, err := q.todos.ListTodos(ctx, &params)
-	if err != nil {
-		return nil, err
+	// verify pagination cursor
+	var after int64
+	if params.After != "" {
+		a, err := strconv.ParseInt(params.After, 10, 64)
+		if err != nil {
+			return nil, gqlerror.Errorf("invalid cursor: %s", params.After)
+		}
+		after = a
 	}
 
-	n := int(res.GetTotal())
+	// execute service query
+	res, err := q.todos.ListTodos(ctx, &params)
+	if err != nil {
+		return nil, gqlerror.Errorf("todos error: %v", err)
+	}
+
+	// build result
+	n, todos := int(res.GetTotal()), res.GetTodos()
 	out := models.TodosQueryConnection{
-		Edges: make([]*models.TodosQueryEdge, n),
+		Edges: make([]*models.TodosQueryEdge, len(todos)),
 		PageInfo: &models.PageInfo{
 			Total: &n,
 		},
 	}
 	for i, t := range res.GetTodos() {
-		todo, err := UnmarshalTodoPB(t)
+		todo, err := unmarshalTodoPB(t)
 		if err != nil {
 			return nil, err
 		}
+		after++
 		out.Edges[i] = &models.TodosQueryEdge{
-			Cursor: todo.ID,
+			Cursor: strconv.FormatInt(after, 10),
 			Node:   todo,
 		}
 	}
@@ -92,10 +107,10 @@ func (q *Query) Todos(ctx context.Context, input models.TodosQueryInput) (*model
 	return &out, nil
 }
 
-// UnmarshalTodoPB unmarshals a Todo protobuf message into a graphql type
-func UnmarshalTodoPB(t *proto.Todo) (*models.Todo, error) {
+// unmarshalTodoPB unmarshals a Todo protobuf message into a graphql type
+func unmarshalTodoPB(t *proto.Todo) (*models.Todo, error) {
 	todo := models.Todo{
-		ID:          t.GetTitle(),
+		ID:          t.GetId(),
 		Complete:    t.GetComplete(),
 		Description: null.StringFrom(t.GetDescription()).Ptr(),
 		Title:       t.GetTitle(),
@@ -110,7 +125,7 @@ func UnmarshalTodoPB(t *proto.Todo) (*models.Todo, error) {
 
 	createdAt, err := ptypes.Timestamp(t.GetCreatedAt())
 	if err != nil {
-		return nil, err
+		return nil, gqlerror.Errorf("error marshalling todo: %v", err)
 	}
 	todo.CreatedAt = createdAt
 

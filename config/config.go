@@ -14,6 +14,11 @@ type Config struct {
 		Type  string `validate:"required"`
 		URL   string `validate:"required"`
 	} `validate:"required"`
+	GraphQL struct {
+		Graphiql      bool
+		Port          uint32 `validate:"required"`
+		TodosEndpoint string `mapstructure:"todos-endpoint" validate:"required"`
+	} `validate:"required"`
 	GRPC struct {
 		Port uint32 `validate:"required"`
 	} `validate:"required"`
@@ -37,6 +42,7 @@ func New() (*Config, error) {
 
 	viper.SetDefault("elasticsearch.index", "todos")
 	viper.SetDefault("elasticsearch.type", "doc")
+	viper.SetDefault("graphql.port", 9000)
 	viper.SetDefault("grpc.port", 10000)
 	viper.SetDefault("grpc-gateway.port", 10001)
 	viper.SetDefault("log.level", "info")
@@ -44,6 +50,9 @@ func New() (*Config, error) {
 	viper.BindEnv("elasticsearch.index", "ELASTICSEARCH_INDEX")
 	viper.BindEnv("elasticsearch.type", "ELASTICSEARCH_TYPE")
 	viper.BindEnv("elasticsearch.url", "ELASTICSEARCH_URL")
+	viper.BindEnv("graphql.graphiql", "GRAPHQL_GRAPHIQL")
+	viper.BindEnv("graphql.port", "GRAPHQL_PORT")
+	viper.BindEnv("graphql.todos-endpoint", "GRAPHQL_TODOS_ENDPOINT")
 	viper.BindEnv("grpc.port", "GRPC_PORT")
 	viper.BindEnv("grpc-gateway.endpoint", "GRPC_GATEWAY_ENDPOINT")
 	viper.BindEnv("grpc-gateway.port", "GRPC_GATEWAY_PORT")

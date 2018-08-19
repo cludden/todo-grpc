@@ -5,7 +5,8 @@
   name = "github.com/99designs/gqlgen"
   packages = [
     "graphql",
-    "graphql/introspection"
+    "graphql/introspection",
+    "handler"
   ]
   revision = "3575c289486fce174c941b63749b9bbb88c3ca90"
   version = "0.4.3"
@@ -51,6 +52,12 @@
     "ptypes/timestamp"
   ]
   revision = "20b6e0b198932a2f01dee489cf80a230766b65d6"
+
+[[projects]]
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -114,6 +121,12 @@
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mnmtanish/go-graphiql"
+  packages = ["."]
+  revision = "cef5a61bd62b996aa67029c6c858f673d6e51718"
 
 [[projects]]
   name = "github.com/olivere/elastic"
@@ -309,6 +322,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b47b403a9d84858a54997ea9cfe160d3767fb42d7cbfd396336862c14ead346d"
+  inputs-digest = "bd5c68a02545a24b182764891897f0c822a9e7e3a109aca410b32eeef057f9f2"
   solver-name = "gps-cdcl"
   solver-version = 1

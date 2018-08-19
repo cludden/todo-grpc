@@ -7,7 +7,32 @@ services:
       discovery.type: single-node
     ports:
       - 9200:9200
-
+    
+  graphiql:
+    image: npalm/graphiql
+    environment:
+      API_URL: http://graphql:12000/graphql
+    ports:
+      - "4000:4000"
+  
+  graphql:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-graphql
+    depends_on:
+      - todo-grpc
+    environment:
+      GRAPHQL_GRAPHIQL: "true"
+      GRAPHQL_PORT: 12000
+      GRAPHQL_TODOS_ENDPOINT: 127.0.0.1:9000
+      LOG_LEVEL: debug
+    expose:
+      - "12000"
+    ports:
+      - "12000:12000"
+    volumes:
+      - ./envoy.graphql.yaml:/etc/envoy.graphql.yaml
+  
   todo-gateway:
     build:
       context: .

@@ -1650,99 +1650,99 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 }
 
 var parsedSchema = gqlparser.MustLoadSchema(
-	&ast.Source{Name: "graphql/schema.graphql", Input: `# Represents a moment in time
+	&ast.Source{Name: "graphql/schema.graphql", Input: `"Represents a moment in time"
 scalar DateTime
 
-# Describes the input to a completeTodo mutation
+"Describes the input to a completeTodo mutation"
 input CompleteTodoInput {
-    # Primary identifier
+    "Primary identifier"
     id: ID!
 }
 
-# Describes the input to a createTodo mutation
+"Describes the input to a createTodo mutation"
 input CreateTodoInput {
-    # Optional task detail
+    "Optional task detail"
     description: String
 
-    # Task title
+    "Task title"
     title: String!
 }
 
-# Describes the root mutation entrypoints
+"Describes the root mutation entrypoints"
 type Mutation {
-    # Mark an existing Todo as completed
+    "Mark an existing Todo as completed"
     completeTodo(input: CompleteTodoInput!): Todo
 
-    # Create a new Todo
+    "Create a new Todo"
     createTodo(input: CreateTodoInput!): Todo
 }
 
-# Describes a vertex in the graph
+"Describes a vertex in the graph"
 interface Node {
-    # Primary identifier
+    "Primary identifier"
     id: ID!
 }
 
-# Describes pagination information
+"Describes pagination information"
 type PageInfo {
-    # The total number of items represented by the connection
+    "The total number of items represented by the connection"
     total: Int
 }
 
-# Describes the root query entrypoints
+"Describes the root query entrypoints"
 type Query {
-    # Retrieves a paginated list of todos
+    "Retrieves a paginated list of todos"
     todos(input: TodosQueryInput!): TodosQueryConnection
 }
 
-# Represents an individual task
+"Represents an individual task"
 type Todo implements Node {
-    # Primary identifier
+    "Primary identifier"
     id: ID!
 
-    # Boolean flag indicating whether or not the todo has been completed
+    "Boolean flag indicating whether or not the todo has been completed"
     complete: Boolean!
 
-    # Completion timestamp
+    "Completion timestamp"
     completed_at: DateTime
 
-    # Creation timestamp
+    "Creation timestamp"
     created_at: DateTime!
 
-    # Optional detail
+    "Optional detail"
     description: String
 
-    # Task title
+    "Task title"
     title: String!
 }
 
-# Root todos query connection
+"Root todos query connection"
 type TodosQueryConnection {
-    # List of edges
+    "List of edges"
     edges: [TodosQueryEdge]
 
-    # Pagination information
+    "Pagination information"
     pageInfo: PageInfo
 }
 
-# Edge type for a TodosQueryConnection
+"Edge type for a TodosQueryConnection"
 type TodosQueryEdge {
-    # Pagination cursor
+    "Pagination cursor"
     cursor: String!
 
-    # Item at the end of the edge
+    "Item at the end of the edge"
     node: Todo
 }
 
-# Describes the input to the root todos query
+"Describes the input to the root todos query"
 input TodosQueryInput {
-    # Pagination offset
+    "Pagination offset"
     after: String
 
-    # Page size
+    "Page size"
     first: Int
 
-    # Optional query string
+    "Optional query string"
     query: String
 }`},
 )
