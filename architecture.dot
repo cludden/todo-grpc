@@ -1,0 +1,54 @@
+digraph architecture {
+    envoy_graphql->{envoy_grpc1,envoy_grpc2,envoy_grpc3}
+    envoy_gw->{envoy_grpc1,envoy_grpc2,envoy_grpc3}
+
+    subgraph cluster_graphql {
+        style="filled"
+        fillcolor="gray90"
+
+        graphql [label="GraphQL" style="filled" fillcolor="deeppink"]
+        envoy_graphql [label="envoy" style="filled" fillcolor="darkorchid1"]
+
+        graphql->envoy_graphql
+    }
+
+    subgraph cluster_todo_gateway {
+        style="filled"
+        fillcolor="gray90"
+
+        todo_gw [label="RESTful" style="filled" fillcolor="darkgoldenrod1"]
+        envoy_gw [label="envoy" style="filled" fillcolor="darkorchid1"]
+
+        todo_gw->envoy_gw
+    }
+
+    subgraph cluster_todo_grpc1 {
+        style="filled"
+        fillcolor="gray90"
+
+        todo_grpc1 [label="gRPC" style="filled" fillcolor="dodgerblue1"]
+        envoy_grpc1 [label="envoy" style="filled" fillcolor="darkorchid1"]
+
+        envoy_grpc1->todo_grpc1
+    }
+
+    subgraph cluster_todo_grpc2 {
+        style="filled"
+        fillcolor="gray90"
+
+        todo_grpc2 [label="gRPC" style="filled" fillcolor="dodgerblue1"]
+        envoy_grpc2 [label="envoy" style="filled" fillcolor="darkorchid1"]
+
+        envoy_grpc2->todo_grpc2
+    }
+
+    subgraph cluster_todo_grpc3 {
+        style="filled"
+        fillcolor="gray90"
+
+        todo_grpc3 [label="gRPC" style="filled" fillcolor="dodgerblue1"]
+        envoy_grpc3 [label="envoy" style="filled" fillcolor="darkorchid1"]
+
+        envoy_grpc3->todo_grpc3
+    }
+}

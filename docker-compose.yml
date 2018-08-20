@@ -7,13 +7,6 @@ services:
       discovery.type: single-node
     ports:
       - 9200:9200
-    
-  graphiql:
-    image: npalm/graphiql
-    environment:
-      API_URL: http://graphql:12000/graphql
-    ports:
-      - "4000:4000"
   
   graphql:
     build:

@@ -1,5 +1,9 @@
 # todo-grpc
-a sample grpc application
+a sample Todo [gRPC](https://grpc.io/) application that powers both a [GraphQL](https://graphql.org/) API (using [gqlgen](https://github.com/99designs/gqlgen)) as well as a more traditional RESTful JSON API (powered by [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway)), all communicating via an [Envoy](https://www.envoyproxy.io/) service mesh
+
+<p align="center">
+<img src="./architecture.png" align="center" alt="architecture diagram" />
+</p>
 
 ## Installation
 *Prerequisites:*
@@ -7,7 +11,8 @@ a sample grpc application
 - [dep@v0.4](https://github.com/golang/dep)
 - [retool@v0.82](https://github.com/twitchtv/retool)
 - [protoc@v3](https://github.com/google/protobuf)
-- [docker@1.17](https://store.docker.com/search?type=edition&offering=community)
+- [docker@v1.18](https://store.docker.com/search?type=edition&offering=community)
+- [docker-compose@v1.22](https://docs.docker.com/compose/install/)
 - [a configured go workspace](https://golang.org/doc/code.html)
 
 ```shell
@@ -24,19 +29,20 @@ $ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 
 ## Getting Started
 1. [Build the application](#Building)
+   ```shell
+    $ retool do goreleaser --snapshot --rm-dist --skip-publish
+    ```
 2. Run the application with docker
     ```shell
-    # start backing services
-    $ docker-compose up -d elasticsearch
-    
-    # start application servers
-    $ docker-compose up --scale todo-grpc=3
+    $ docker-compose up -d elasticsearch && \
+        sleep 5s && \
+        docker-compose up --scale todo-grpc=3
     ```
-3. Explore the json-over-http api running at [localhost:11000](http://localhost:11000)
+3. Explore the RESTful JSON api running at [localhost:11000](http://localhost:11000)
    ```shell
     $ curl localhost:11000/todos
    ```
-4. Explore the graphql api via the GraphQL Playground running at [localhost:12000](http://localhost:12000)
+4. Explore the GraphQL api via the GraphQL Playground running at [localhost:12000](http://localhost:12000)
 
 ## Documentation
 - View the source code documentation at [localhost:6060/pkg/todo-grpc/](http://localhost:6060/pkg/todo-grpc/) with `godoc`:
