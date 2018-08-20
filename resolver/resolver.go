@@ -53,7 +53,7 @@ func (r *Resolver) ElasticsearchRepository() (todo.Repository, error) {
 			URL:      c.Elasticsearch.URL,
 		})
 		if err != nil {
-			return nil, fmt.Errorf("error resolving local repository: %v", err)
+			return nil, fmt.Errorf("error resolving elasticsearch repository: %v", err)
 		}
 		r.elasticsearchRepository = repo
 	}

@@ -1,4 +1,4 @@
-// Package grpc provides a grpc server with supporint middleware
+// Package grpc provides a grpc server with supporting middleware
 package grpc
 
 import (

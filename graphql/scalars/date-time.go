@@ -1,3 +1,5 @@
+// Package scalars provides types and methods for marshalling and
+// unmarshalling custom graphql scalars
 package scalars
 
 import (

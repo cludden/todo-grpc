@@ -1,4 +1,4 @@
-// Package graphql provides the graphql server
+// Package graphql provides a graphql server
 package graphql
 
 import (

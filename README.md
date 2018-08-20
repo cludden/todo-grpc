@@ -26,8 +26,17 @@ $ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 1. [Build the application](#Building)
 2. Run the application with docker
     ```shell
-    $ docker-compose up -d elasticsearch && docker-compose up --scale todo-grpc=3
+    # start backing services
+    $ docker-compose up -d elasticsearch
+    
+    # start application servers
+    $ docker-compose up --scale todo-grpc=3
     ```
+3. Explore the json-over-http api running at [localhost:11000](http://localhost:11000)
+   ```shell
+    $ curl localhost:11000/todos
+   ```
+4. Explore the graphql api via the GraphQL Playground running at [localhost:12000](http://localhost:12000)
 
 ## Documentation
 - View the source code documentation at [localhost:6060/pkg/todo-grpc/](http://localhost:6060/pkg/todo-grpc/) with `godoc`:
@@ -58,7 +67,7 @@ $ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 # set protoc path pointing to the root protoc directory (containing bin, include)
 $ export PROTOC_PATH=/path/to/protoc
 
-# run code gen via protoc
+# run protobuf code gen via protoc
 $ retool do protoc \
     -I $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
     -I $GOPATH/src \
@@ -73,6 +82,9 @@ $ retool do protoc \
 
 # do post processing
 $ retool do protoc-go-inject-tag -input=./proto/todo.pb.go
+
+# run graphql code gen via gqlgen
+$ retool do gqlgen
 ```
 
 ## Building
