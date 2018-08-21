@@ -6,11 +6,10 @@ a sample Todo [gRPC](https://grpc.io/) application that powers both a [GraphQL](
 </p>
 
 ## Installation
-*Prerequisites:*
+*__Prerequisites__:*
 - [go@v1.10](https://golang.org/doc/install)
 - [dep@v0.4](https://github.com/golang/dep)
 - [retool@v0.82](https://github.com/twitchtv/retool)
-- [protoc@v3](https://github.com/google/protobuf)
 - [docker@v1.18](https://store.docker.com/search?type=edition&offering=community)
 - [docker-compose@v1.22](https://docs.docker.com/compose/install/)
 - [a configured go workspace](https://golang.org/doc/code.html)
@@ -21,10 +20,6 @@ $ git clone https://github.com/cludden/todo-grpc $GOPATH/src/todo-grpc
 
 # install dependencies and sync vendored executables
 $ cd $GOPATH/src/todo-grpc && dep ensure -vendor-only && retool sync
-
-# install global plugins
-$ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-$ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 ```
 
 ## Documentation
@@ -78,6 +73,24 @@ $ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 4. Explore the GraphQL api via the GraphQL Playground running at [localhost:8080](http://localhost:8080)
 
 ## Code Generation
+The following components are generated from [protobuf source](./protos/todo.proto) using `protoc`:
+- gRPC server stub
+- gRPC client sdk
+- gRPC documentation (both HTML and markdown)
+- gRPC Gateway server (RESTful JSON api server)
+- Swagger/OpenAPI documentation (for REST api)
+  
+The following components are generated from the [GraphQL schema](./graphql/schema.graphql) using `gqlgen`:
+- GraphQL server stub
+- GraphQL domain types
+
+*__Prerequisites__:*
+- all prerequisites listed under [installation](#Installation)
+- [protoc@v3](https://github.com/google/protobuf)
+- [protoc-gen-grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway)
+   - `go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway`
+- [protoc-gen-swagger](https://github.com/grpc-ecosystem/grpc-gateway)
+   - `go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger`
 
 ```shell
 # set protoc path pointing to the root protoc directory (containing bin, include)
