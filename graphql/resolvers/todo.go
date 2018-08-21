@@ -7,6 +7,8 @@ import (
 	"todo-grpc/graphql/models"
 	"todo-grpc/proto"
 
+	"google.golang.org/grpc/status"
+
 	"github.com/golang/protobuf/ptypes"
 	"github.com/vektah/gqlparser/gqlerror"
 	null "gopkg.in/guregu/null.v3"
@@ -37,6 +39,9 @@ func (m *Mutations) CompleteTodo(ctx context.Context, input models.CompleteTodoI
 		Id: input.ID,
 	})
 	if err != nil {
+		if stat, ok := status.FromError(err); ok {
+			return nil, gqlerror.Errorf(stat.Message())
+		}
 		return nil, gqlerror.Errorf("todos error: %v", err)
 	}
 
@@ -50,6 +55,9 @@ func (m *Mutations) CreateTodo(ctx context.Context, input models.CreateTodoInput
 		Title:       input.Title,
 	})
 	if err != nil {
+		if stat, ok := status.FromError(err); ok {
+			return nil, gqlerror.Errorf(stat.Message())
+		}
 		return nil, gqlerror.Errorf("todos error: %v", err)
 	}
 
@@ -81,6 +89,9 @@ func (q *Query) Todos(ctx context.Context, input models.TodosQueryInput) (*model
 	// execute service query
 	res, err := q.todos.ListTodos(ctx, &params)
 	if err != nil {
+		if stat, ok := status.FromError(err); ok {
+			return nil, gqlerror.Errorf(stat.Message())
+		}
 		return nil, gqlerror.Errorf("todos error: %v", err)
 	}
 

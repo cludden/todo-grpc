@@ -5,8 +5,8 @@ package elasticsearch
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 	"todo-grpc/proto"
@@ -15,6 +15,8 @@ import (
 
 	"github.com/olivere/elastic"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Config describes the input to a NewRepository operation
@@ -65,7 +67,14 @@ func NewRepository(c *Config) (*Repository, error) {
 // CompleteTodo markes an existing todo as completed
 func (r *Repository) CompleteTodo(ctx context.Context, id string) (*todo.Todo, error) {
 	// define update script
-	script := elastic.NewScript("ctx._source.complete = params.complete; ctx._source.completed_at = params.completed_at").
+	script := elastic.NewScript(`
+			if (ctx._source.complete == true) {
+				ctx.op = 'none'
+			} else {
+				ctx._source.complete = params.complete;
+				ctx._source.completed_at = params.completed_at;
+			}
+		`).
 		Lang("painless").
 		Type("inline").
 		Param("complete", true).
@@ -77,22 +86,34 @@ func (r *Repository) CompleteTodo(ctx context.Context, id string) (*todo.Todo, e
 		Type(r.typeName).
 		Id(id).
 		Script(script).
+		Refresh("true").
 		FetchSource(true)
 
 	// execute index operation
 	res, err := update.Do(ctx)
 	if err != nil {
-		r.log.WithError(err).Errorln("elasticsearch:error:create-todo")
-		return nil, err
+		if eserr, ok := err.(*elastic.Error); ok {
+			if eserr.Status == http.StatusNotFound {
+				return nil, status.Errorf(codes.NotFound, http.StatusText(http.StatusNotFound))
+			}
+		} else {
+			r.log.WithError(err).Errorln("elasticsearch:error:complete-todo")
+			return nil, status.Errorf(codes.Internal, http.StatusText(http.StatusInternalServerError))
+		}
+	}
+
+	if res.Result == "noop" {
+		return nil, status.Errorf(codes.AlreadyExists, "todo %s has already been marked as completed", id)
 	}
 
 	// unmarshal output
 	if res.GetResult == nil || res.GetResult.Source == nil {
-		return nil, errors.New("not found")
+		return nil, status.Errorf(codes.NotFound, http.StatusText(http.StatusNotFound))
 	}
 	var t todo.Todo
 	if err := json.Unmarshal(*res.GetResult.Source, &t); err != nil {
-		return nil, fmt.Errorf("error unmarshaling todo: %v", err)
+		r.log.WithError(err).Errorln("elasticsearch:error:complete-todo:unmarshal")
+		return nil, status.Errorf(codes.Internal, "error unmarshaling todo: %v", err)
 	}
 	return &t, nil
 }
@@ -111,7 +132,7 @@ func (r *Repository) CreateTodo(ctx context.Context, in *todo.Todo) error {
 	_, err := index.Do(ctx)
 	if err != nil {
 		r.log.WithError(err).Errorln("elasticsearch:error:create-todo")
-		return err
+		return status.Errorf(codes.Internal, http.StatusText(http.StatusInternalServerError))
 	}
 	return nil
 }
@@ -147,11 +168,10 @@ func (r *Repository) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*
 	res, err := search.Do(ctx)
 	if err != nil {
 		if eserr, ok := err.(*elastic.Error); ok && eserr.Details.Type == "index_not_found_exception" {
-			fmt.Printf("%+v\n", eserr.Details)
 			return &out, nil
 		}
 		r.log.WithError(err).Errorln("elasticsearch:error:list-todos")
-		return nil, err
+		return nil, status.Errorf(codes.Internal, http.StatusText(http.StatusInternalServerError))
 	}
 
 	// build output
@@ -160,11 +180,11 @@ func (r *Repository) ListTodos(ctx context.Context, in *proto.ListTodosInput) (*
 	for i, d := range res.Hits.Hits {
 		var t todo.Todo
 		if d.Source == nil {
-			return &out, fmt.Errorf("missing todo source for document with id: %s", d.Id)
+			return nil, status.Errorf(codes.Internal, "missing todo source for document with id: %s", d.Id)
 		}
 		if err := json.Unmarshal(*d.Source, &t); err != nil {
-			r.log.WithError(err).Errorln("elasticsearch:error:list-todos:unmarsha")
-			return &out, fmt.Errorf("unable to unmarshal todo: %v", err)
+			r.log.WithError(err).Errorln("elasticsearch:error:list-todos:unmarshal")
+			return nil, status.Errorf(codes.Internal, "error unmarshaling todo: %v", err)
 		}
 		out.Todos[i] = &t
 	}

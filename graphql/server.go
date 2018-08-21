@@ -2,16 +2,13 @@
 package graphql
 
 import (
-	"context"
 	"fmt"
 	"net/http"
-	"time"
 	"todo-grpc/graphql/generated"
 	"todo-grpc/graphql/resolvers"
 	"todo-grpc/proto"
 	"todo-grpc/validation"
 
-	"github.com/99designs/gqlgen/graphql"
 	handler "github.com/99designs/gqlgen/handler"
 	"github.com/sirupsen/logrus"
 )
@@ -66,14 +63,6 @@ func (s *Server) GraphQL(r *resolvers.Resolver) http.HandlerFunc {
 	return handler.GraphQL(
 		generated.NewExecutableSchema(generated.Config{
 			Resolvers: r,
-		}),
-		handler.ResolverMiddleware(func(ctx context.Context, next graphql.Resolver) (res interface{}, err error) {
-			rc := graphql.GetResolverContext(ctx)
-			now := time.Now()
-			fmt.Println("Entered", rc.Object, rc.Field.Name)
-			res, err = next(ctx)
-			fmt.Println("Left", rc.Object, rc.Field.Name, "=>", res, err, time.Since(now))
-			return res, err
 		}),
 	)
 }

@@ -100,7 +100,7 @@ $ retool do goreleaser --snapshot --rm-dist --skip-publish
 
 ## Todo
 - [ ] add tests
-- [ ] add better error propagation
+- [x] add better error propagation
 - [ ] add tls
 - [ ] prometheus & grafana
 - [ ] add second service & edge proxy
