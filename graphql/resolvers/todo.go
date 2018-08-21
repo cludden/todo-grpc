@@ -7,10 +7,9 @@ import (
 	"todo-grpc/graphql/models"
 	"todo-grpc/proto"
 
-	"google.golang.org/grpc/status"
-
 	"github.com/golang/protobuf/ptypes"
 	"github.com/vektah/gqlparser/gqlerror"
+	"google.golang.org/grpc/status"
 	null "gopkg.in/guregu/null.v3"
 )
 

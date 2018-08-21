@@ -10,9 +10,7 @@ import (
 	"todo-grpc/validation"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
 	"github.com/sirupsen/logrus"
-
 	"google.golang.org/grpc"
 )
 
