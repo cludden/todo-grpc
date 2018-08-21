@@ -61,11 +61,21 @@ $ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
         sleep 5s && \
         docker-compose up --scale todo-grpc=3
     ```
-3. Explore the RESTful JSON api running at [localhost:11000](http://localhost:11000)
+3. Explore the RESTful JSON api running at [localhost:8080](http://localhost:8080)
    ```shell
-    $ curl localhost:11000/todos
+    # create a todo
+    $ curl -X POST \
+        -H 'Content-Type: application/json' \
+        -d '{"title":"task one","description":"the first task"}' \
+        localhost:8080/todos
+    
+    # list all todos
+    $ curl localhost:8080/todos
+
+    # mark todo as completed
+    $ curl -X POST localhost:8080/todos/{id}/completion
    ```
-4. Explore the GraphQL api via the GraphQL Playground running at [localhost:12000](http://localhost:12000)
+4. Explore the GraphQL api via the GraphQL Playground running at [localhost:8080](http://localhost:8080)
 
 ## Code Generation
 
@@ -101,9 +111,10 @@ $ retool do goreleaser --snapshot --rm-dist --skip-publish
 ## Todo
 - [ ] add tests
 - [x] add better error propagation
+- [x] add edge proxy
 - [ ] add tls
 - [ ] prometheus & grafana
-- [ ] add second service & edge proxy
+- [ ] add second service
 
 ## License
 Copyright (c) 2018 Chris Ludden

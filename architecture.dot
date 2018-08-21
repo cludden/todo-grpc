@@ -1,7 +1,15 @@
 digraph architecture {
+    traefik->{graphql,todo_gw}
     envoy_graphql->{envoy_grpc1,envoy_grpc2,envoy_grpc3}
     envoy_gw->{envoy_grpc1,envoy_grpc2,envoy_grpc3}
     {todo_grpc1,todo_grpc2,todo_grpc3}->elasticsearch
+
+    subgraph cluster_proxy {
+        style="filled"
+        fillcolor="gray90"
+
+        traefik [label="Traefik" style="filled" fillcolor="deepskyblue2"]
+    }
 
     subgraph cluster_graphql {
         style="filled"

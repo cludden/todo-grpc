@@ -1,12 +1,25 @@
 version: "3"
 services:
 
+  edge:
+    image: traefik
+    command: --api --docker
+    labels:
+      traefik.enable: false
+    ports:
+      - "8080:80"
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
     environment:
       discovery.type: single-node
+    labels:
+      traefik.enable: false
     ports:
-      - 9200:9200
+      - "9200:9200"
   
   graphql:
     build:
@@ -21,8 +34,12 @@ services:
       LOG_LEVEL: debug
     expose:
       - "12000"
+    labels:
+      traefik.backend: graphql
+      traefik.port: 12000
+      traefik.frontend.rule: "Path:/,/graphql"
     ports:
-      - "12000:12000"
+      - "12000"
     volumes:
       - ./envoy.graphql.yaml:/etc/envoy.graphql.yaml
   
@@ -36,11 +53,13 @@ services:
       GRPC_GATEWAY_ENDPOINT: 127.0.0.1:9001
       GRPC_GATEWAY_PORT: 11000
     expose:
-      - "9001"
       - "11000"
+    labels:
+      traefik.backend: todo-gateway
+      traefik.port: 11000
+      traefik.frontend.rule: "PathPrefix:/todos"
     ports:
-      - "9001:9001"
-      - "11000:11000"
+      - "11000"
     volumes:
       - ./envoy.gw.yaml:/etc/envoy.gw.yaml
   
@@ -56,8 +75,10 @@ services:
     expose:
       - "8000"
       - "10000"
+    labels:
+      traefik.enable: false
     ports:
-      - "8000-8005:8000"
+      - "8000-8010:8000"
       - "10000-10005:10000"
     volumes:
       - ./envoy.grpc.yaml:/etc/envoy.grpc.yaml
